@@ -1,0 +1,22 @@
+.container{
+    text-align: center;
+    width: fit-content;
+    margin: auto;
+    border: 5px #000fff solid;
+    background-color: #e8f0fe;
+    padding: 1rem;
+  
+}
+
+.fields {
+    display: inline-grid;
+    color: white;
+}
+
+.mr {
+    margin: 1rem
+}
+
+.padding {
+    padding: 1rem;
+}

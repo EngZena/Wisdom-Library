@@ -1,0 +1,61 @@
+.list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.container {
+    color: black;
+}
+
+.btn {
+    float: right;
+}
+
+.filterForm{
+    display: flex;
+}
+.filterInput{
+    margin: auto;
+}
+
+.modal {
+    padding: 16 32 24;
+    text-align: center;
+    position: fixed; 
+    z-index: 1; 
+    padding-top: 10px;
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%;
+    overflow: auto; 
+    background-color: rgb(19, 18, 18); 
+    background-color: rgba(75, 78, 76, 0.4);
+}
+
+.modalContent {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+
+.exit {
+    float: right;
+    cursor: pointer;
+}
+
+.modalText {
+    column-count: 2;
+    column-gap: 40px;
+}
+
+.price {
+    display: inline-block;
+}
+
+.modalHeader {
+    text-align: center;
+}

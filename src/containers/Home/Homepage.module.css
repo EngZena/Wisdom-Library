@@ -1,0 +1,35 @@
+.form {
+    width: fit-content;
+    padding: 0 1rem 1rem;
+    background-color: #e8f0fe;
+}
+.input {
+    color: white;
+}
+
+.field {
+    margin: 1rem !important;
+    color: white;
+}
+.bold {
+    font-weight: bold;
+}
+
+
+@media screen and (min-width: 360px){
+    .text {
+        width: 300px;
+        left: calc(50% - 250px);
+    }
+}
+
+@media screen and (min-width: 1000px){
+    .text {
+        width: 1000px;
+    }
+}
+@media screen and (min-width: 1300px){
+    .text {
+        width: 1250px;
+    }
+}

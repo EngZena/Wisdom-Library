@@ -1,0 +1,17 @@
+.Card {
+    text-align: center;
+    border: 5px #ffffff solid;
+    width: 15rem;
+    padding: 0 1rem 1rem;
+    margin: 1rem;
+    background-color: #000fff;
+    color: white;
+}
+
+.btnContainer {
+    display: flex;
+}
+
+.btn{
+    margin: auto;
+}

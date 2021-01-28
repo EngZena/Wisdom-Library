@@ -1,0 +1,14 @@
+.NavigationItems {
+    background-color: blue;
+    overflow: hidden;
+}
+
+.header {
+    font-family: 'Courgette', cursive;
+    margin: 10px;
+}
+
+.main {
+    margin: 1rem;
+}
+

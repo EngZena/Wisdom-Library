@@ -1,0 +1,23 @@
+.content {
+    padding: 5px 15px;
+    margin: 10px;
+    border-bottom: 5px solid #000fff;
+}
+
+.innerContent {
+        column-count: 2;
+        column-gap: 40px;
+}
+
+.displayFlex {
+    display: flex;
+}
+
+.mr {
+    margin: 1px 5px;
+    font-weight: bold;
+}
+
+.price{
+    display: inline-block;
+}
