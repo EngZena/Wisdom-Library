@@ -1,10 +1,11 @@
 import {instance} from '../axios-instanse';
-const userId = localStorage.getItem('userId')
-
 
  export  const  postOrder = async (order) => {
+    const userId = localStorage.getItem('userId')
+
     const res = await  instance.post(`orders/${userId}.json` , order).then(
            response => {
+               console.log('response', response)
                return response
            }
        ).catch(error => {
@@ -15,6 +16,8 @@ const userId = localStorage.getItem('userId')
 
 
 export const getOrders = async () => {
+    const userId = localStorage.getItem('userId')
+    
     const res = await instance.get(`orders/${userId}.json`).then(
         response => {
             const loadedData = [];
