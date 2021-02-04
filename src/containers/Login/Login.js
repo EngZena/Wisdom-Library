@@ -1,72 +1,51 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import Button from '@material-ui/core/Button';
 import classes from './Login.module.css';
 import { InputFields } from '../../components/UI/Input/InputField'
 import { AuthContext } from '../../context/AuthContext';
+import * as validate from '../Validation/Validation'
 
-export default class Login extends Component {
+export const Login = () => {
 
-
-    constructor() {
-        super();
-        this.state = {
-            email: '',
-            password: '',
-            signIn: true,
-            errorEmail: false,
-            passwordError: false,
-        }
-
-    }
+   const [email, setEmail] = useState('');
+   const [password, setPassword] = useState('');
+   const [errorEmail, setErrorEmail] = useState(false);
+   const [passwordError, setPasswordError] = useState(false);
 
 
-    onChange = async (event) => {
-        await this.setState({
-            ...this.state,
-            [event.target.id]: event.target.value,
-        });
+  const  onChange = async (event) => {
+        const targetId = event.target.id;
+        switch(targetId) {
+            case('email'): 
+            await setEmail(event.target.value)
+            break;
+            case('password'): 
+            await setPassword(event.target.value)
+            break;
+            default: 
+                break;
+         }
+       
         if (event.target.id === 'email') {
-            let regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if (regEmail.test(this.state.email)) {
-                return this.setState({
-                    ...this.state,
-                    errorEmail: false,
-                })
+            if(validate.validateEmail(email)){   
+                return setErrorEmail(true)
             } else {
-                return this.setState({
-                    ...this.state,
-                    errorEmail: true,
-                })
+                return setErrorEmail(false)
             }
 
         }
         if (event.target.id === 'password') {
-            if (!this.state.password) {
-                return this.setState({
-                    ...this.state,
-                    passwordError: true,
-                })
+            if (!password) {
+                return setPasswordError(true)
             }
-            if (this.state.password.length < 6) {
-                return this.setState({
-                    ...this.state,
-                    passwordError: true,
-                })
+            if (password.length < 5) {
+                return setPasswordError(true)
             } else {
-                this.setState({
-                    ...this.state,
-                    passwordError: false
-                })
+                return setPasswordError(false)
             }
-
         }
-
-
     }
 
-
-
-    render() {
         return (
             <div className={classes.container}>
                 <div className={classes.fields}>
@@ -76,9 +55,9 @@ export default class Login extends Component {
                             label="email"
                             type="email"
                             variant="outlined"
-                            value={this.state.email}
-                            onChange={(event) => this.onChange(event)}
-                            error={this.state.errorEmail}
+                            value={email}
+                            onChange={(event) => onChange(event)}
+                            error={errorEmail}
                         />
                     </div>
                     <div className={classes.mr}>
@@ -87,10 +66,10 @@ export default class Login extends Component {
                             label="Password"
                             type="password"
                             autoComplete="current-password"
-                            value={this.state.password}
+                            value={password}
                             variant="outlined"
-                            onChange={(event) => this.onChange(event)}
-                            error={this.state.passwordError}
+                            onChange={(event) => onChange(event)}
+                            error={passwordError}
 
                         />
                     </div>
@@ -102,7 +81,7 @@ export default class Login extends Component {
                                 variant="contained"
                                 color="primary"
                                 className={classes.mr}
-                                onClick={() => handleLogin(this.state.email, this.state.password)}
+                                onClick={() => handleLogin(email, password)}
                             >
                                 sign in
                      </Button>
@@ -118,7 +97,7 @@ export default class Login extends Component {
                                 <Button
                                     variant="contained"
                                     color="secondary"
-                                    onClick={() => handleSignUp(this.state.email, this.state.password)}
+                                    onClick={() => handleSignUp(email, password)}
                                     className={classes.mr}
                                 >
                                     sign up
@@ -131,4 +110,4 @@ export default class Login extends Component {
             </div>
         )
     }
-}
+export default  Login;

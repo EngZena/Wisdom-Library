@@ -5,7 +5,6 @@ import {instance} from '../axios-instanse';
 
     const res = await  instance.post(`orders/${userId}.json` , order).then(
            response => {
-               console.log('response', response)
                return response
            }
        ).catch(error => {

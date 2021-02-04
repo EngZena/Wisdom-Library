@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom';
 import classes from './App.module.css';
 import Layout from './components/UI/Layout/Layout';
@@ -8,43 +8,37 @@ import Login from './containers/Login/Login';
 import Orders from './containers/Orders/Orders';
 import {AuthContext} from './context/AuthContext'
 import * as services from './services/authService'
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      authenticated: false,
-    }
-  }
+const App = () =>  {
+  const [authenticated, setAuthenticated] = useState(false)
 
-  componentDidMount() {
-    localStorage.getItem('token') && this.setState({ authenticated: true })
-    }
+  useEffect(() => {
+    localStorage.getItem('token') && setAuthenticated(true)
+    }, [])
   
-    handleSignUp = async (email, password) => {
+    const handleSignUp = async (email, password) => {
         const result = await services.signUp(email, password)
         if(result.status === 200)
         {
-          this.setState({ authenticated: true })
+          setAuthenticated(true)
           return <Redirect to='/' />
         }
       }
 
 
-    handleLogin = async (email, password) => {
+      const handleLogin = async (email, password) => {
       const result = await services.signIn(email, password)
       if(result.status === 200)
       {
-        this.setState({ authenticated: true })
+        setAuthenticated(true)
         return <Redirect to='/' />
       }
 
       }
-    handleLogout = () => {
+      const handleLogout = () => {
       services.signOut();
-      this.setState({ authenticated: false })
+      setAuthenticated(false);
     }
 
-  render() {
     let tabs = (
       <Switch>
         <Route path="/Books" component={Books} />
@@ -55,7 +49,7 @@ class App extends Component {
     )
 
 
-    if (this.state.authenticated) {
+    if (authenticated) {
       tabs = (
         <Switch>
           <Route path="/Books" component={Books} />
@@ -70,16 +64,14 @@ class App extends Component {
       <div className={classes.App}>
         <AuthContext.Provider 
         value={{
-          authenticated: this.state.authenticated,
-          handleLogin: this.handleLogin,
-          handleLogout: this.handleLogout,
-          handleSignUp: this.handleSignUp,
-
+          authenticated: authenticated,
+          handleLogin: handleLogin,
+          handleLogout: handleLogout,
+          handleSignUp: handleSignUp,
         }}
         >
         <Layout 
-        isAuth={this.state.authenticated}
-        handleChangeAuth={this.handleChangeAuth}
+        isAuth={authenticated}
         >
           {tabs}
         </Layout>
@@ -88,6 +80,5 @@ class App extends Component {
     );
   }
 
-}
 
 export default App;

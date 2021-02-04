@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import Card from '../Card/Card'
 import * as services from '../../services/'
 import { AuthContext } from '../../context/AuthContext';
@@ -15,209 +15,178 @@ import InputField from "../../components/UI/Input/InputField";
 import * as validation from '../Validation/'
 import Loading from '../../components/UI/Loading/Loading';
 
-export class Books extends Component {
+export const Books = (props) => {
 
-    constructor() {
-        super();
-        this.state = {
-            checkoutList: [],
-            allBooks: [],
-            isAuth: false,
-            copyBooks: [],
-            searchInput: '',
-            showModal: false,
-            totalPrice: 0,
-            firstName: '',
-            email: '',
-            streetName: '',
-            phoneNumber: '',
-            nameError: false,
-            emailError: false,
-            streetError: false,
-            numberError: false,
-            loading: false,
-            disableSubmit: true
-        }
-    }
+    const [checkoutList, setCheckoutList] = useState([]);
+    const [allBooks, setAllBooks] = useState([]);
+    const [auth, setIsAuth] = useState(false);
+    const [copyBooks, setCopyBooks] = useState([]);
+    const [searchInput, setSearchInput] = useState('');
+    const [showModal, setShowModel] = useState(false);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [firstName, setFirstName] = useState('');
+    const [email, setEmail] = useState('');
+    const [streetName, setStreetName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [nameError, setNameError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+    const [streetError, setStreetError] = useState(false);
+    const [numberError, setNumberError] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [disableSubmit, setDisableSubmit] = useState(true);
 
-    async componentDidMount() {
-        this.setState({ ...this.state, loading: true });
+    const fetchBooks = async () => {
         let response = await services.getBooks();
         const arr = response.data;
-        this.setState({ ...this.state, allBooks: arr });
-        this.setState({ ...this.state, copyBooks: arr });
-        this.setState({ ...this.state, loading: false });
+        setAllBooks(arr);
+        setCopyBooks(arr);
+    }
 
+    useEffect(() => {
+        setLoading(true);
+        fetchBooks();
+        setLoading(false);
         const token = localStorage.getItem('token')
-        token && this.setState({ ...this.state, isAuth: true })
+        token && setIsAuth(true)
+    }, [loading, auth ,setIsAuth])
+
+    const LoginRedirect = () => {
+        props.history.push("/login");
     }
 
-    LoginRedirect = () => {
-        this.props.history.push("/login");
+    const handleAddToCheckouList = async (id) => {
+        const obj = await services.getBook(id);
+        setCheckoutList([...checkoutList, obj.data])
+        setTotalPrice(totalPrice + obj.data.price)
     }
 
-    handleAddToCheckouList = async (id) => {
-        const obj = await services.getBook(id)
-        this.setState({
-            ...this.state,
-            checkoutList: [...this.state.checkoutList, obj.data],
-            totalPrice: this.state.totalPrice + obj.data.price
-        })
+    const handleRemoveFromCheckouList = async (id) => {
+        const updatedList = checkoutList.filter(li => li.id !== id)
+        const bookPrice = allBooks[id].price;
+        setCheckoutList(updatedList)
+        setCheckoutList(totalPrice - bookPrice)
     }
 
-    handleRemoveFromCheckouList = async (id) => {
-        const updatedList = this.state.checkoutList.filter(li => li.id !== id)
-        const bookPrice = this.state.allBooks[id].price;
-        this.setState({
-            ...this.state,
-            checkoutList: updatedList,
-            totalPrice: this.state.totalPrice - bookPrice
-        })
+    const handleChangeSearch = (event) => {
+        setSearchInput(event.target.value)
     }
 
-    handleChangeSearch = (event) => {
-        this.setState({ ...this.state, searchInput: event.target.value });
-    }
-
-    handleSubmitSearch = () => {
-        if (this.state.searchInput !== '') {
-            const result = this.state.allBooks.filter(book => book.name === this.state.searchInput)
-            this.setState({ ...this.state, copyBooks: result });
+    const handleSubmitSearch = () => {
+        if (searchInput !== '') {
+            const result = allBooks.filter(book => book.name === searchInput)
+            setCopyBooks(result);
         } else {
-            this.setState({ ...this.state, copyBooks: this.state.allBooks });
+            setCopyBooks(allBooks)
         }
     }
 
-    handlePreventDefault = (event) => {
+    const handlePreventDefault = (event) => {
         event.preventDefault();
     };
-    closeModal = () => {
-        this.setState({ ...this.state, showModal: false })
+    const closeModal = () => {
+        setShowModel(false)
     }
-    openModal = () => {
-        this.setState({ ...this.state, showModal: true })
+    const openModal = () => {
+        setShowModel(true)
     }
 
-    onChangeCheckout = async(event) => {
-        this.setState({
-            ...this.state,
-            [event.target.id]: event.target.value
-        });
-        if(event.target.id === 'phoneNumber'){
-            const status =  await validation.validateNumber(event.target.value);
-            status ? await this.setState({
-                ...this.state,
-                numberError: true
-            }) :
-            await this.setState({
-                ...this.state,
-                numberError: false
-            }) 
+    const onChangeCheckout = async (event) => {
+        const Value = event.target.value;
+
+        if (event.target.id === 'phoneNumber') {
+            setPhoneNumber(Value)
+            const status = await validation.validateNumber(Value);
+            status ? await setNumberError(true)
+                :
+                await setNumberError(false)
+
         }
-            if(event.target.id === 'email'){
-                const status =  await validation.validateEmail(event.target.value);
-                status ? await this.setState({
-                    ...this.state,
-                    emailError: true
-                }) :
-                await this.setState({
-                    ...this.state,
-                    emailError: false
-                }) 
-            }
-        
-            if(event.target.id === 'streetName'){
-                const status =  await validation.validateText(event.target.value);
-                status ? await this.setState({
-                    ...this.state,
-                    streetError: true
-                }) :
-                await this.setState({
-                    ...this.state,
-                    streetError: false
-                }) 
-            }
-        
-        
-            if(event.target.id === 'firstName'){
-                const status =  await validation.validateText(event.target.value);
-                status ? await this.setState({
-                    ...this.state,
-                    nameError: true
-                }) :
-                await this.setState({
-                    ...this.state,
-                    nameError: false
-                }) 
-            }
-        
-            if((this.state.phoneNumber)){
-              this.setState({
-                  ...this.state,
-                  disableSubmit: false
-              })
-          }
+        if (event.target.id === 'email') {
+            setEmail(Value)
+            const status = await validation.validateEmail(Value);
+            status ? await setEmailError(true)
+                :
+                await setEmailError(false)
+        }
+
+        if (event.target.id === 'streetName') {
+            setStreetName(Value)
+            const status = await validation.validateText(Value);
+            status ? await setStreetError(true)
+                :
+                await setStreetError(false)
+        }
+
+
+        if (event.target.id === 'firstName') {
+            setFirstName(Value)
+            const status = await validation.validateText(Value);
+            status ? await setNameError(true)
+                :
+                await setNameError(false)
+        }
+
+        if ((phoneNumber)) {
+            setDisableSubmit(false)
+        }
 
 
     }
 
-    submitCheckout = async () => {
+    const submitCheckout = async () => {
 
-    if(this.state.email && this.state.phoneNumber ) {
-                
-        const order = {
-            'firstName': this.state.firstName,
-            'email': this.state.email,
-            'streetName': this.state.streetName,
-            'phoneNumber': this.state.phoneNumber,
-            'orderList': this.state.checkoutList,
-            'totalPrice': this.state.totalPrice,
-        }
-        
-       
+        if (email && phoneNumber) {
+
+            const order = {
+                'firstName': firstName,
+                'email': email,
+                'streetName': streetName,
+                'phoneNumber': phoneNumber,
+                'orderList': checkoutList,
+                'totalPrice': totalPrice,
+            }
+
+
             await services.postOrder(order);
-            this.closeModal()
+            closeModal()
         }
-       
+
     }
 
+    return (
+        // useMemo(() =>
 
+        <React.Fragment>
+            <AuthContext.Consumer>
 
-    render() {
-
-        return (
-
-            <React.Fragment>
-                <AuthContext.Consumer>
-
-                    {({ authenticated }) => (
-                        !authenticated ?
-                            <div>
-                                <Button
-                                    className={classes.btn}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={this.LoginRedirect}
-                                >
-                                    Login to Checkout
+                {({ authenticated }) => (
+                    !authenticated ?
+                        <div>
+                            <Button
+                                className={classes.btn}
+                                variant="contained"
+                                color="primary"
+                                onClick={LoginRedirect}
+                            >
+                                Login to Checkout
                                 </Button>
-                            </div> :
-                            <div>
+                        </div> :
+                        <div>
 
-                                <Button
-                                    className={classes.btn}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={this.openModal}
-                                    disabled={this.state.checkoutList.length === 0}
-                                >
-                                    Checkout
+                            <Button
+                                className={classes.btn}
+                                variant="contained"
+                                color="primary"
+                                onClick={openModal}
+                                disabled={checkoutList.length === 0}
+                            >
+                                Checkout
                                 </Button>
-                            </div>
-                    )}
-                </AuthContext.Consumer>
-<div>
-<div>
+                        </div>
+                )}
+            </AuthContext.Consumer>
+            <div>
+                <div>
                     <p></p>
                 </div>
                 <div>
@@ -230,14 +199,14 @@ export class Books extends Component {
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 type='text'
-                                value={this.state.searchInput}
-                                onChange={this.handleChangeSearch}
+                                value={searchInput}
+                                onChange={handleChangeSearch}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton
                                             aria-label="search"
-                                            onClick={this.handleSubmitSearch}
-                                            onMouseDown={this.handlePreventDefault}
+                                            onClick={handleSubmitSearch}
+                                            onMouseDown={handlePreventDefault}
                                             edge="end"
                                         >
                                             <SearchIcon />
@@ -251,18 +220,18 @@ export class Books extends Component {
 
 
                 </div>
-</div>
-              
-                <div className={classes.list}>
+            </div>
 
-                     {this.state.loading ? (
-                     
-                     <div> 
+            <div className={classes.list}>
+
+                {loading ? (
+
+                    <div>
                         <Loading />
-                     </div>
-                     
-                     ) :                
-                this.state.copyBooks.map((item, index) => {
+                    </div>
+
+                ) :
+                    copyBooks.map((item, index) => {
                         return <Card
                             key={index}
                             id={item.id}
@@ -270,109 +239,103 @@ export class Books extends Component {
                             auther={item.auther}
                             price={item.price}
                             type={item.type}
-                            onAdd={this.handleAddToCheckouList}
-                            onRemove={this.handleRemoveFromCheckouList}
+                            onAdd={handleAddToCheckouList}
+                            onRemove={handleRemoveFromCheckouList}
                         >
                         </Card>
                     })}
-                    {
-                        this.state.showModal &&
-                        (
-                            <div id="myModal" className={classes.modal}>
+                {
+                    showModal &&
+                    (
+                        <div id="myModal" className={classes.modal}>
 
-                                <div className={classes.modalContent} >
-                                    <span className={classes.exit} onClick={this.closeModal} >
-                                        <HighlightOffIcon />
-                                    </span>
+                            <div className={classes.modalContent} >
+                                <span className={classes.exit} onClick={closeModal} >
+                                    <HighlightOffIcon />
+                                </span>
 
 
-                                    <h1 className={classes.modalHeader} >We hope you a worth reading </h1>
-                                    {this.state.checkoutList.map((item, index) => {
-                                        return (
-                                            <div key={index}>
-                                                <div className={classes.modalText}>
-                                                    <p>{item.name}</p>
-                                                    <p className={classes.price} >{item.price}</p>
-
-                                                </div>
+                                <h1 className={classes.modalHeader} >We hope you a worth reading </h1>
+                                {checkoutList.map((item, index) => {
+                                    return (
+                                        <div key={index}>
+                                            <div className={classes.modalText}>
+                                                <p>{item.name}</p>
+                                                <p className={classes.price} >{item.price}</p>
 
                                             </div>
-                                        )
-                                    })}
-                                    <div className={classes.modalText}>
-                                        <h3>Total price</h3>
-                                        <p className={classes.price}>
-                                            {this.state.totalPrice}
-                                        </p>
-                                    </div>
-                                    <div   className={classes.form}>
-                                        <div className={classes.list}>
-                                            <InputField
-                                                id="firstName"
-                                                label="Name"
-                                                type="text"
-                                                value={this.state.firstName}
-                                                variant="outlined"
-                                                onChange={(event) => this.onChangeCheckout(event)}
-                                                error={this.state.nameError}
-                                            >
-                                            </InputField>
-                                            <InputField
-                                                id="email"
-                                                label="email"
-                                                type="text"
-                                                value={this.state.email}
-                                                variant="outlined"
-                                                onChange={(event) => this.onChangeCheckout(event)}
-                                                error={this.state.emailError}
-                                            >
-                                            </InputField>
-                                            <InputField
-                                                id="streetName"
-                                                label="streetName"
-                                                type="text"
-                                                value={this.state.streetName}
-                                                variant="outlined"
-                                                onChange={(event) => this.onChangeCheckout(event)}
-                                                error={this.state.streetError}
-                                            >
-                                            </InputField>
-                                            <InputField
-                                                id="phoneNumber"
-                                                label="phoneNumber"
-                                                type="text"
-                                                value={this.state.phoneNumber}
-                                                variant="outlined"
-                                                onChange={(event) => this.onChangeCheckout(event)}
-                                                error={this.state.numberError}
-                                            >
-                                            </InputField>
-                                        </div>
 
-                                        <div>
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                onClick={this.submitCheckout}
-                                                className={classes.mr}
-                                                disabled={this.state.disableSubmit}
-                                            >
-                                                Submit order
+                                        </div>
+                                    )
+                                })}
+                                <div className={classes.modalText}>
+                                    <h3>Total price</h3>
+                                    <p className={classes.price}>
+                                        {totalPrice}
+                                    </p>
+                                </div>
+                                <div className={classes.form}>
+                                    <div className={classes.list}>
+                                        <InputField
+                                            id="firstName"
+                                            label="Name"
+                                            type="text"
+                                            value={firstName}
+                                            variant="outlined"
+                                            onChange={(event) => onChangeCheckout(event)}
+                                            error={nameError}
+                                        >
+                                        </InputField>
+                                        <InputField
+                                            id="email"
+                                            label="email"
+                                            type="text"
+                                            value={email}
+                                            variant="outlined"
+                                            onChange={(event) => onChangeCheckout(event)}
+                                            error={emailError}
+                                        >
+                                        </InputField>
+                                        <InputField
+                                            id="streetName"
+                                            label="streetName"
+                                            type="text"
+                                            value={streetName}
+                                            variant="outlined"
+                                            onChange={(event) => onChangeCheckout(event)}
+                                            error={streetError}
+                                        >
+                                        </InputField>
+                                        <InputField
+                                            id="phoneNumber"
+                                            label="phoneNumber"
+                                            type="text"
+                                            value={phoneNumber}
+                                            variant="outlined"
+                                            onChange={(event) => onChangeCheckout(event)}
+                                            error={numberError}
+                                        >
+                                        </InputField>
+                                    </div>
+
+                                    <div>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={submitCheckout}
+                                            className={classes.mr}
+                                            disabled={disableSubmit}
+                                        >
+                                            Submit order
                                             </Button>
-                                        </div>
-
-
                                     </div>
-
                                 </div>
                             </div>
-
-                        )
-                    }
-                </div>
-
-            </React.Fragment>
-        )
-    }
+                        </div>
+                    )
+                }
+            </div>
+        </React.Fragment>
+    )
 }
-export default React.memo(Books)
+export default Books;
