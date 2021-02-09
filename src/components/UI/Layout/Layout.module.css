@@ -42,7 +42,7 @@
         width: 90%;
     }
 }
-@media screen and (max-width: 1024px) and (min-width: 417px) {
+@media screen and (max-width: 999px) and (min-width: 417px) {
     .NavigationItems {
         width: 100%;
     }
@@ -50,11 +50,19 @@
         width: 90%;
     }
 }
+@media screen and (max-width: 1024px) and (min-width: 1000px) {
+    .NavigationItems {
+        width: 100%;
+    }
+    .content{
+        width: 100%;
+    }
+}
 @media screen and (max-width: 1367px) and (min-width: 1025px) {
     .NavigationItems {
         width: 100%;
     }
     .content{
-        width: 90%;
+        width: 100%;
     }
 }
