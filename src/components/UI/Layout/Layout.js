@@ -10,7 +10,7 @@ export const Layout = (props) => {
                     <NavigationItems isAuth={props.isAuth} />
                 </div>
 
-                <div>
+                <div className={classes.content}>
                     <h1 className={classes.header}>Wisdom Library</h1>
                     <main className={classes.main}>
                         {props.children}

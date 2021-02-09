@@ -48,7 +48,7 @@ export const Books = (props) => {
         setLoading(false);
         const token = localStorage.getItem('token')
         token && setIsAuth(true)
-    }, [loading, auth ,setIsAuth])
+    }, [loading, auth, setIsAuth])
 
     const LoginRedirect = () => {
         props.history.push("/login");
@@ -61,10 +61,12 @@ export const Books = (props) => {
     }
 
     const handleRemoveFromCheckouList = async (id) => {
-        const updatedList = checkoutList.filter(li => li.id !== id)
-        const bookPrice = allBooks[id].price;
-        setCheckoutList(updatedList)
-        setCheckoutList(totalPrice - bookPrice)
+        if (checkoutList.length > 0) {
+            const updatedList = checkoutList.filter(li => li.id !== (id + 1))
+            const bookPrice = allBooks[id].price;
+            await setCheckoutList(updatedList)
+            await setTotalPrice(totalPrice - bookPrice)
+        }
     }
 
     const handleChangeSearch = (event) => {
@@ -154,8 +156,6 @@ export const Books = (props) => {
     }
 
     return (
-        // useMemo(() =>
-
         <React.Fragment>
             <AuthContext.Consumer>
 
@@ -172,7 +172,6 @@ export const Books = (props) => {
                                 </Button>
                         </div> :
                         <div>
-
                             <Button
                                 className={classes.btn}
                                 variant="contained"
@@ -223,27 +222,29 @@ export const Books = (props) => {
             </div>
 
             <div className={classes.list}>
-
-                {loading ? (
-
-                    <div>
-                        <Loading />
-                    </div>
-
-                ) :
-                    copyBooks.map((item, index) => {
-                        return <Card
-                            key={index}
-                            id={item.id}
-                            name={item.name}
-                            auther={item.auther}
-                            price={item.price}
-                            type={item.type}
-                            onAdd={handleAddToCheckouList}
-                            onRemove={handleRemoveFromCheckouList}
-                        >
-                        </Card>
-                    })}
+                <AuthContext.Consumer>
+                    {({ authenticated }) => (
+                        loading ? (
+                            <div>
+                                <Loading />
+                            </div>
+                        ) :
+                            copyBooks.map((item, index) => {
+                                return <Card
+                                    key={index}
+                                    id={item.id}
+                                    name={item.name}
+                                    auther={item.auther}
+                                    price={item.price}
+                                    type={item.type}
+                                    onAdd={handleAddToCheckouList}
+                                    onRemove={handleRemoveFromCheckouList}
+                                    authenticated={authenticated}
+                                >
+                                </Card>
+                            })
+                    )}
+                </AuthContext.Consumer>
                 {
                     showModal &&
                     (
@@ -254,9 +255,8 @@ export const Books = (props) => {
                                     <HighlightOffIcon />
                                 </span>
 
-
                                 <h1 className={classes.modalHeader} >We hope you a worth reading </h1>
-                                {checkoutList.map((item, index) => {
+                                {(checkoutList.length > 0) && checkoutList.map((item, index) => {
                                     return (
                                         <div key={index}>
                                             <div className={classes.modalText}>
@@ -264,7 +264,6 @@ export const Books = (props) => {
                                                 <p className={classes.price} >{item.price}</p>
 
                                             </div>
-
                                         </div>
                                     )
                                 })}

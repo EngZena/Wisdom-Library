@@ -7,7 +7,7 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 export const Card = (props) => {
     const [selected, setSelected] = useState(false)
 
-    const  handleSelectedTrue = useCallback((id) => {
+    const handleSelectedTrue = useCallback((id) => {
         setSelected(true)
         props.onAdd(id - 1)
     }, [props]);
@@ -19,7 +19,6 @@ export const Card = (props) => {
     return (
         useMemo(() =>
             <div className={classes.Card}>
-
                 <p>{props.name}</p>
                 <p>by</p>
                 <p>{props.auther}</p>
@@ -30,7 +29,7 @@ export const Card = (props) => {
                         <Fab
                             aria-label="add"
                             onClick={() => handleSelectedTrue(props.id)}
-                            disabled={selected}
+                            disabled={props.authenticated ? selected : true}
                         >
                             <AddIcon />
                         </Fab>
@@ -39,17 +38,17 @@ export const Card = (props) => {
                         <Fab
                             aria-label="add"
                             onClick={() => handleSelectedFalse(props.id)}
-                            disabled={!selected}
+                            disabled={props.authenticated ? !selected : true}
                         >
                             <HighlightOffIcon />
                         </Fab>
                     </div>
                 </div>
             </div>
-        ,[handleSelectedFalse, 
-            selected,
-            props,
-            handleSelectedTrue,
-        ]))
+            , [handleSelectedFalse,
+                selected,
+                props,
+                handleSelectedTrue,
+            ]))
 }
 export default Card;

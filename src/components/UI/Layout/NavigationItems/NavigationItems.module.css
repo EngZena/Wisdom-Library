@@ -10,15 +10,29 @@
 }
 
 
-@media screen and (min-width: 360px){
+@media screen and (min-width: 150px) and (max-width: 300px){
     .NavigationItems {
+        width: 100%;
+        display: block;
+        float: left;
+    }
+}
+@media screen and (min-width: 301px) and (max-width: 800px){
+    .NavigationItems {
+        width: 100%;
         display: flex;
         float: left;
     }
 }
 
 
-@media screen and (min-width: 1300px){
+@media screen and (min-width: 801px) and (max-width: 1300px) {
+    .NavigationItems {
+        display: flex;
+        float: right;
+    }
+}
+@media screen and (min-width: 1301px) and (max-width: 2500px) {
     .NavigationItems {
         display: flex;
         float: right;

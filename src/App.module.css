@@ -1,9 +1,9 @@
-
 .App {
-  background-color: #e8f0fe;
+  background-color: #ffffff;
+  color: blue;
   font-size: larger;
-  min-width: 100vh;
-  min-height: 100vh;
+
+  padding-bottom: 5rem;
 }
 
 .App-link {
@@ -16,5 +16,29 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+@media screen and (min-width: 150px) and (max-width: 320px){
+  .App {
+      width: 100%;
+  }
+}
+@media screen and (min-width: 150px) and (max-width: 800px){
+  .App {
+      width: 100%;
+  }
+}
+
+@media screen and (min-width: 801px) and (max-width: 999px){
+  .App {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 1000px) and (max-width: 1400px){
+  .App {
+    width: 100%;
+    min-width: 100vh;
+    min-height: 100vh;
   }
 }

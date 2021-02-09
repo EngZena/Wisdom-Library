@@ -12,3 +12,49 @@
     margin: 1rem;
 }
 
+@media screen and (max-width: 319px) and (min-width: 250px) {
+    .NavigationItems {
+        width: 100%;
+    }
+    .content{
+        width: 90%;
+    }
+    .main{
+        width: 90%;
+    }
+}
+@media screen and (max-width: 360px) and (min-width: 320px) {
+    .NavigationItems {
+        width: 100%;
+    }
+    .content{
+        width: 90%;
+    }
+    .main{
+        width: 90%;
+    }
+}
+@media screen and (max-width: 416px) and (min-width: 361px) {
+    .NavigationItems {
+        width: 100%;
+    }
+    .content{
+        width: 90%;
+    }
+}
+@media screen and (max-width: 1024px) and (min-width: 417px) {
+    .NavigationItems {
+        width: 100%;
+    }
+    .content{
+        width: 90%;
+    }
+}
+@media screen and (max-width: 1367px) and (min-width: 1025px) {
+    .NavigationItems {
+        width: 100%;
+    }
+    .content{
+        width: 90%;
+    }
+}
