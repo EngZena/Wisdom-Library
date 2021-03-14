@@ -2,15 +2,14 @@
     text-align: center;
     width: fit-content;
     margin: auto;
-    border: 5px #000fff solid;
-    background-color: #e8f0fe;
+    /* border: 5px #000fff solid; */
     padding: 1rem;
   
 }
 
 .fields {
     display: inline-grid;
-    color: white;
+    /* color: white; */
 }
 
 .mr {
@@ -20,3 +19,9 @@
 .padding {
     padding: 1rem;
 }
+
+@media screen and (min-width: 360px){
+    .container {
+      width: 80%;
+    }
+ }

@@ -1,11 +1,10 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { AuthContext } from '../../../../context/AuthContext';
 import NavigationItem from './NavigationItem/NavigationItem';
 
 import classes from './NavigationItems.module.css';
 
-export default class NavigationItems extends Component {
-    render() {
+export const NavigationItems = () => {
         return (
             <div >
                 <AuthContext.Consumer>
@@ -37,5 +36,6 @@ export default class NavigationItems extends Component {
                 </AuthContext.Consumer>
             </div>
         )
-    }
 }
+
+export default NavigationItems;

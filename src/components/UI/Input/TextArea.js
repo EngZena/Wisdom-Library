@@ -1,11 +1,12 @@
-import TextField from '@material-ui/core/TextField';
 import classes from './InputFields.module.css';
-export const InputFields = (props) => {
+import TextField from '@material-ui/core/TextField';
+
+export const TextArea = (props) => {
     return (
-        <div  className={classes.fields}>
+              <div  className={classes.fields}>
               <TextField 
                     id={props.id}
-                    className={classes.field}
+                    className={classes.textField}
                     label={props.label}
                     variant="outlined"
                     type={props.type}
@@ -13,8 +14,10 @@ export const InputFields = (props) => {
                     value={props.value}
                     error={props.error}
                    required
+                   multiline
+                   rows={props.rows}
                 /> 
         </div>
     )
 }
-export default InputFields
+export default TextArea
