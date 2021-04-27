@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Component } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom';
 import classes from './App.module.css';
 import Layout from './components/UI/Layout/Layout';
@@ -8,37 +8,43 @@ import Login from './containers/Login/Login';
 import Orders from './containers/Orders/Orders';
 import {AuthContext} from './context/AuthContext'
 import * as services from './services/authService'
-const App = () =>  {
-  const [authenticated, setAuthenticated] = useState(false)
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      authenticated: false,
+    }
+  }
 
-  useEffect(() => {
-    localStorage.getItem('token') && setAuthenticated(true)
-    }, [])
+  componentDidMount() {
+    localStorage.getItem('token') && this.setState({ authenticated: true })
+    }
   
-    const handleSignUp = async (email, password) => {
+    handleSignUp = async (email, password) => {
         const result = await services.signUp(email, password)
         if(result.status === 200)
         {
-          setAuthenticated(true)
+          this.setState({ authenticated: true })
           return <Redirect to='/' />
         }
       }
 
 
-      const handleLogin = async (email, password) => {
+    handleLogin = async (email, password) => {
       const result = await services.signIn(email, password)
       if(result.status === 200)
       {
-        setAuthenticated(true)
+        this.setState({ authenticated: true })
         return <Redirect to='/' />
       }
 
       }
-      const handleLogout = () => {
+    handleLogout = () => {
       services.signOut();
-      setAuthenticated(false);
+      this.setState({ authenticated: false })
     }
 
+  render() {
     let tabs = (
       <Switch>
         <Route path="/Books" component={Books} />
@@ -49,7 +55,7 @@ const App = () =>  {
     )
 
 
-    if (authenticated) {
+    if (this.state.authenticated) {
       tabs = (
         <Switch>
           <Route path="/Books" component={Books} />
@@ -64,14 +70,16 @@ const App = () =>  {
       <div className={classes.App}>
         <AuthContext.Provider 
         value={{
-          authenticated: authenticated,
-          handleLogin: handleLogin,
-          handleLogout: handleLogout,
-          handleSignUp: handleSignUp,
+          authenticated: this.state.authenticated,
+          handleLogin: this.handleLogin,
+          handleLogout: this.handleLogout,
+          handleSignUp: this.handleSignUp,
+
         }}
         >
         <Layout 
-        isAuth={authenticated}
+        isAuth={this.state.authenticated}
+        handleChangeAuth={this.handleChangeAuth}
         >
           {tabs}
         </Layout>
@@ -80,5 +88,6 @@ const App = () =>  {
     );
   }
 
+}
 
 export default App;

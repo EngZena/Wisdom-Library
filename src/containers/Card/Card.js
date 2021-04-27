@@ -1,54 +1,55 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { Component } from 'react'
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import classes from './Card.module.css';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+export default class Card extends Component {
+    constructor() {
+        super();
+        this.state = {
+            selected: false,
+        }
+    }
 
-export const Card = (props) => {
-    const [selected, setSelected] = useState(false)
-
-    const handleSelectedTrue = useCallback((id) => {
-        setSelected(true)
-        props.onAdd(id - 1)
-    }, [props]);
-    const handleSelectedFalse = useCallback((id) => {
-        setSelected(false)
-        props.onRemove(id - 1)
-    }, [props]);
-
-    return (
-        useMemo(() =>
+    handleSelectedTrue = (id) => {
+        this.setState({ selected: true })
+        this.props.onAdd(id-1)
+    }
+    handleSelectedFalse = (id) => {
+        this.setState({ selected: false })
+        this.props.onRemove(id-1)
+    }
+ 
+    render() {
+        return (
             <div className={classes.Card}>
-                <p>{props.name}</p>
+
+                <p>{this.props.name}</p>
                 <p>by</p>
-                <p>{props.auther}</p>
-                <p>{props.price} JD</p>
-                <p>{props.type}</p>
-                <div className={classes.btnContainer}>
-                    <div className={classes.btn}>
-                        <Fab
-                            aria-label="add"
-                            onClick={() => handleSelectedTrue(props.id)}
-                            disabled={props.authenticated ? selected : true}
-                        >
-                            <AddIcon />
-                        </Fab>
-                    </div>
-                    <div className={classes.btn}>
-                        <Fab
-                            aria-label="add"
-                            onClick={() => handleSelectedFalse(props.id)}
-                            disabled={props.authenticated ? !selected : true}
-                        >
-                            <HighlightOffIcon />
-                        </Fab>
-                    </div>
-                </div>
+                <p>{this.props.auther}</p>
+                <p>{this.props.price} JD</p>
+                <p>{this.props.type}</p>
+                        <div className={classes.btnContainer}>
+                            <div className={classes.btn}>
+                                <Fab
+                                    aria-label="add"
+                                    onClick={() => this.handleSelectedTrue(this.props.id) }
+                                    disabled={this.state.selected}
+                                    >
+                                    <AddIcon />
+                                </Fab>
+                                </div>
+                                <div className={classes.btn}>
+                                <Fab
+                                    aria-label="add"
+                                    onClick={() => this.handleSelectedFalse(this.props.id)}
+                                    disabled={!this.state.selected}
+                                >
+                                    <HighlightOffIcon />
+                                </Fab>
+                                </div>
+                        </div>
             </div>
-            , [handleSelectedFalse,
-                selected,
-                props,
-                handleSelectedTrue,
-            ]))
+        )
+    }
 }
-export default Card;

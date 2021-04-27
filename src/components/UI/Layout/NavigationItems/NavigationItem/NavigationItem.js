@@ -1,18 +1,19 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import classes from './NavigationItem.module.css';
 
-export const NavigationItem = (props) => {
+export default class NavigationItem extends Component {
+    render() {
         return (
             <div className={classes.NavigationItem}
-            onClick={props.onClick}>
+            onClick={this.props.onClick}>
                <NavLink 
-               to={props.link}
-               exact={props.exact}
+               to={this.props.link}
+               exact={this.props.exact}
                
-               > {props.children} </NavLink>
+               > {this.props.children} </NavLink>
             </div>
         )
+    }
 }
-export default NavigationItem;

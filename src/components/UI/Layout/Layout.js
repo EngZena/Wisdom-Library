@@ -1,23 +1,23 @@
-import React from 'react'
+import React, { Component } from 'react'
 import NavigationItems from './NavigationItems/NavigationItems'
 
 import classes from './Layout.module.css';
 
-export const Layout = (props) => {
+export default class Layout extends Component {
+    render() {
         return (
             <div>
                 <div className={classes.NavigationItems}>
-                    <NavigationItems isAuth={props.isAuth} />
+                    <NavigationItems isAuth={this.props.isAuth} />
                 </div>
 
                 <div className={classes.content}>
                     <h1 className={classes.header}>Wisdom Library</h1>
                     <main className={classes.main}>
-                        {props.children}
+                        {this.props.children}
                     </main>
                 </div>
             </div>
         )
+    }
 }
-
-export default Layout;

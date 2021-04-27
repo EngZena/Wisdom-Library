@@ -1,51 +1,107 @@
-import React, { useState } from 'react'
+import React, { Component } from 'react'
 import Button from '@material-ui/core/Button';
 import classes from './Login.module.css';
 import { InputFields } from '../../components/UI/Input/InputField'
 import { AuthContext } from '../../context/AuthContext';
 import * as validate from '../Validation/Validation'
 
-export const Login = () => {
-
-   const [email, setEmail] = useState('');
-   const [password, setPassword] = useState('');
-   const [errorEmail, setErrorEmail] = useState(false);
-   const [passwordError, setPasswordError] = useState(false);
+export default class Login extends Component {
 
 
-  const  onChange = async (event) => {
+    constructor() {
+        super();
+        this.state = {
+            email: '',
+            password: '',
+            signIn: true,
+            errorEmail: false,
+            passwordError: false,
+        }
+
+    }
+      onChange = async (event) => {
         const targetId = event.target.id;
-        switch(targetId) {
-            case('email'): 
-            await setEmail(event.target.value)
-            break;
-            case('password'): 
-            await setPassword(event.target.value)
-            break;
-            default: 
-                break;
-         }
+        await this.setState({...this.state,
+            [event.target.id]: event.target.value
+        })
        
         if (event.target.id === 'email') {
-            if(validate.validateEmail(email)){   
-                return setErrorEmail(true)
+            if(validate.validateEmail(this.state.email)){ 
+                return this.setState({...this.state,
+                    errorEmail: true
+                }) 
             } else {
-                return setErrorEmail(false)
+                return this.setState({...this.state,
+                    errorEmail: false
+                }) 
             }
 
         }
         if (event.target.id === 'password') {
-            if (!password) {
-                return setPasswordError(true)
+            if (!this.state.password) {
+                return this.setState({...this.state,
+                    passwordError: true
+                }) 
             }
-            if (password.length < 5) {
-                return setPasswordError(true)
+            if (this.state.password.length < 5) {
+                return this.setState({...this.state,
+                    passwordError: true
+                }) 
             } else {
-                return setPasswordError(false)
+                return this.setState({...this.state,
+                    passwordError: false
+                }) 
             }
         }
     }
 
+    // onChange = async (event) => {
+    //     await this.setState({
+    //         ...this.state,
+    //         [event.target.id]: event.target.value,
+    //     });
+    //     if (event.target.id === 'email') {
+    //         let regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    //         if (regEmail.test(this.state.email)) {
+    //             return this.setState({
+    //                 ...this.state,
+    //                 errorEmail: false,
+    //             })
+    //         } else {
+    //             return this.setState({
+    //                 ...this.state,
+    //                 errorEmail: true,
+    //             })
+    //         }
+
+    //     }
+    //     if (event.target.id === 'password') {
+    //         if (!this.state.password) {
+    //             return this.setState({
+    //                 ...this.state,
+    //                 passwordError: true,
+    //             })
+    //         }
+    //         if (this.state.password.length < 6) {
+    //             return this.setState({
+    //                 ...this.state,
+    //                 passwordError: true,
+    //             })
+    //         } else {
+    //             this.setState({
+    //                 ...this.state,
+    //                 passwordError: false
+    //             })
+    //         }
+
+    //     }
+
+
+    // }
+
+
+
+    render() {
         return (
             <div className={classes.container}>
                 <div className={classes.fields}>
@@ -55,9 +111,9 @@ export const Login = () => {
                             label="email"
                             type="email"
                             variant="outlined"
-                            value={email}
-                            onChange={(event) => onChange(event)}
-                            error={errorEmail}
+                            value={this.state.email}
+                            onChange={(event) => this.onChange(event)}
+                            error={this.state.errorEmail}
                         />
                     </div>
                     <div className={classes.mr}>
@@ -66,10 +122,10 @@ export const Login = () => {
                             label="Password"
                             type="password"
                             autoComplete="current-password"
-                            value={password}
+                            value={this.state.password}
                             variant="outlined"
-                            onChange={(event) => onChange(event)}
-                            error={passwordError}
+                            onChange={(event) => this.onChange(event)}
+                            error={this.state.passwordError}
 
                         />
                     </div>
@@ -81,7 +137,7 @@ export const Login = () => {
                                 variant="contained"
                                 color="primary"
                                 className={classes.mr}
-                                onClick={() => handleLogin(email, password)}
+                                onClick={() => handleLogin(this.state.email, this.state.password)}
                             >
                                 sign in
                      </Button>
@@ -97,7 +153,7 @@ export const Login = () => {
                                 <Button
                                     variant="contained"
                                     color="secondary"
-                                    onClick={() => handleSignUp(email, password)}
+                                    onClick={() => handleSignUp(this.state.email, this.state.password)}
                                     className={classes.mr}
                                 >
                                     sign up
@@ -110,4 +166,4 @@ export const Login = () => {
             </div>
         )
     }
-export default  Login;
+}
